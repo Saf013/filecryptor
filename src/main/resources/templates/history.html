@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8">
+    <title>Облiк</title>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="my-5">
+        <div class="container">
+            <div class="input-group mb-3">
+                <a th:href="@{/home}">Назад</a>
+            </div>
+            <div class="row" align="center">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Файл</th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Тип</th>
+                        <th scope="col">Ключ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="document : ${documents}">
+                        <td th:text="${document.id}"/>
+                        <td th:text="${document.title}"/>
+                        <td th:text="${document.dateReview}"/>
+                        <td th:text="${document.type}"/>
+                        <td th:text="${document.secretKey}"/>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

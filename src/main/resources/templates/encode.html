@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="utf-8">
+    <title>Закодувати</title>
+
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="my-5">
+        <div class="container" align="center">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Кодування та декодування файлів</h1>
+                </div>
+            </div>
+            <div class="form-control">
+                <form method="post" role="form" th:action="@{/encode/encoding}"
+                      th:object="${document}" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
+                    <p>Виберіть варіант:</p>
+                    <div class="form-check">
+                        <div class="form-check form-check-inline">
+                            <label class="form-label me-5">
+                                <input type="radio" class="form-check-input" name="mode" value="encod"/>
+                                Кодувати
+                            </label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <label class="form-label">
+                                <input type="radio" class="form-check-input" name="mode" value="decod"/>Декодувати
+                            </label>
+                        </div>
+                        <div class="invalid-feedback">
+                            You need to select either A or B
+                        </div>
+                    </div>
+                    <p>Виберіть свій алгоритм шифрування:</p>
+                    <div class="form-check">
+                        <div class="form-check form-check-inline">
+                            <label class="form-label me-5">
+                                <input type="radio" class="form-check-input" name="type" value="AES" th:field="*{type}"/>
+                                AES
+                            </label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <label class="form-label">
+                                <input type="radio" class="form-check-input" name="type" value="DES" th:field="*{type}"/>DES
+                            </label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="input-group mb-3">
+                        <label class="form-label"></label>
+                        <input type="text"
+                               name="secretKey"
+                               class="form-control"
+                               id="secretKey"
+                               placeholder="Key"
+                               th:field="*{secretKey}"
+                        />
+                    </div>
+                    <div class="input-group mb-3">
+                        <p th:errors = "*{secretKey}" class="text-danger"
+                           th:if="${#fields.hasErrors('secretKey')}"></p>
+                    </div>
+                    <div class="input-group mb-3">
+                        <label class="input-group-text" for="inputGroupFile01">Завантажити</label>
+                        <input type="file" name="file" class="form-control" id="inputGroupFile01">
+                    </div>
+                    <div>
+                        <button class="btn btn-success" type="submit" onclick="checkSelection()">Почати</button>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="errorModalLabel">Ошибка</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Пожалуйста, выберите вариант.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function checkSelection() {
+                    var typeElements = document.getElementsByName("type");
+                    var typeSelected = false;
+                    var typeElements2 = document.getElementsByName("mode");
+                    var typeSelected2 = false;
+
+                    var fileInput = document.getElementById("inputGroupFile01");
+                    var fileSize = fileInput.files[0].size;
+                    if (!fileInput.files.length) {
+                        alert("Будь ласка, виберіть файл");
+                        event.preventDefault(); // Предотвращаем отправку формы
+                        return false;
+                    } else if (fileSize > 10 * 1024 * 1024) { // 10 МБ в байтах
+                        alert("Файл занадто великий. Максимальний розмір – 10 МБ.");
+                        event.preventDefault(); // Предотвращаем отправку формы
+                        return false;
+                    }
+
+                    for (var i = 0; i < typeElements.length; i++) {
+                        if (typeElements[i].checked) {
+                            typeSelected = true;
+                            break;
+                        }
+                    }
+
+                    for (var p = 0; p < typeElements2.length; p++) {
+                        if (typeElements2[p].checked) {
+                            typeSelected2 = true;
+                            break;
+                        }
+                    }
+
+                    if (!typeSelected || !typeSelected2) {
+                        alert("Будь ласка, виберіть тип алгоритму та дію");
+                        event.preventDefault(); // Предотвращаем отправку формы
+                        return false; // Остановить отправку формы
+                    }
+
+                    return true; // Продолжить отправку формы
+                }
+            </script>
+            <script>
+                // Example starter JavaScript for disabling form submissions if there are invalid fields
+                (function () {
+                    'use strict'
+
+                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                    var forms = document.querySelectorAll('.needs-validation')
+
+                    // Loop over them and prevent submission
+                    Array.prototype.slice.call(forms)
+                        .forEach(function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (!form.checkValidity()) {
+                                    event.preventDefault()
+                                    event.stopPropagation()
+                                }
+
+                                form.classList.add('was-validated')
+                            }, false)
+                        })
+                })()
+            </script>
+        </div>
+    </section>
+</div>
+</body>
+</html>
